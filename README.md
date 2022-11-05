@@ -2,9 +2,9 @@
 You must create an API account on OpenAI to receive a token: https://openai.com/
 
 ## Set Environment Variables:
-- ```OPEN_AI_TOKEN```: Your OpenAI API key
-- ```OPEN_AI_TEMP```: Temperature value for API call
-- ```OPEN_AI_MAX_TOKENS```: Max token value for API call
+- ```OPEN_AI_TOKEN```: Your OpenAI API key (string)
+- ```OPEN_AI_TEMP```: Temperature value for API call (string)
+- ```OPEN_AI_MAX_TOKENS```: Max token value for API call (string)
 
 ## To Build Executable:
 Run the following command from this directory:
