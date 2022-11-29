@@ -30,7 +30,7 @@ func main() {
 	ctx := context.Background()
 
 	req := gogpt.CompletionRequest{
-		Model:       "text-davinci-002",
+		Model:       "text-davinci-003",
 		MaxTokens:   maxTokens,
 		Temperature: float32(temperature),
 		Prompt:      prompt,
