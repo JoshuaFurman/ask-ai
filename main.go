@@ -9,7 +9,20 @@ import (
 	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
+func build_prompt(question string) string {
+	return fmt.Sprintf(`
+You are GPT-3 a highly advanced AI assistant that is an expert in all fields and you provide high quality answers.
+
+I need your help answering the following question and please provides examples when you can:
+
+%s
+`, question)
+}
+
 func main() {
+	// #########################################################################################
+	// SET UP
+	// #########################################################################################
 	bearer := os.Getenv("OPEN_AI_TOKEN")
 	if bearer == "" {
 		fmt.Println("You need to set OPEN_AI_TOKEN environment variable.")
@@ -40,20 +53,27 @@ func main() {
 	} else {
 		prompt = os.Args[1] // CLI argument provided as prompt to GPT-3
 	}
+	// #########################################################################################
+	// #########################################################################################
+	// #########################################################################################
 
 	c := gogpt.NewClient(bearer)
 	ctx := context.Background()
 
+	// Make call to OpenAI API
 	req := gogpt.CompletionRequest{
 		Model:       "text-davinci-003",
 		MaxTokens:   maxTokens,
 		Temperature: float32(temperature),
-		Prompt:      prompt,
+		Prompt:      build_prompt(prompt), // Using build_prompt function to inject prompt template
 	}
 	resp, err := c.CreateCompletion(ctx, req)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
+	// Print results
 	fmt.Println(resp.Choices[0].Text)
+	fmt.Printf("\nTotal Tokens used: %d\n", resp.Usage.TotalTokens)
 }
