@@ -1,2 +1,2 @@
-github.com/sashabaranov/go-gpt3 v0.0.0-20220811094137-be08f204f03a h1:QoIkQ34PQZDTRMzPITDN2BrhoiRvUa2S0upfeCXxT44=
-github.com/sashabaranov/go-gpt3 v0.0.0-20220811094137-be08f204f03a/go.mod h1:BIZdbwdzxZbCrcKGMGH6u2eyGe1xFuX9Anmh3tCP8lQ=
+github.com/sashabaranov/go-openai v1.7.0 h1:D1dBXoZhtf/aKNu6WFf0c7Ah2NM30PZ/3Mqly6cZ7fk=
+github.com/sashabaranov/go-openai v1.7.0/go.mod h1:lj5b/K+zjTSFxVLijLSTDZuP7adOgerWeFyZLUhAKRg=

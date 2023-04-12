@@ -1,5 +1,5 @@
 module github.com/JoshuaFurman/ask-ai
 
-go 1.19
+go 1.20
 
-require github.com/sashabaranov/go-gpt3 v0.0.0-20220811094137-be08f204f03a // indirect
+require github.com/sashabaranov/go-openai v1.7.0
