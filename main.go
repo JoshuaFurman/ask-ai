@@ -8,8 +8,97 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/alecthomas/chroma"
+	"github.com/alecthomas/chroma/formatters"
+	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/styles"
 	openai "github.com/sashabaranov/go-openai"
 )
+
+func formatCode(code, lang string) {
+	lexer := lexers.Get(lang)
+	if lexer == nil {
+		lexer = lexers.Fallback
+	}
+	lexer = chroma.Coalesce(lexer)
+
+	style := styles.Get("solarized-dark")
+	if style == nil {
+		style = styles.Fallback
+	}
+
+	formatter := formatters.Get("terminal256")
+	if formatter == nil {
+		formatter = formatters.Fallback
+	}
+
+	iterator, err := lexer.Tokenise(nil, code)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		return
+	}
+	err = formatter.Format(os.Stdout, style, iterator)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+	}
+}
+
+func processChar(char rune, state *int, buffer *string, code *string, lang *string) {
+	switch *state {
+	case 0:
+		if char == '`' {
+			*state = 1
+		} else {
+			fmt.Print(string(char))
+		}
+	case 1:
+		if char == '`' {
+			*state = 2
+		} else {
+			*state = 0
+			fmt.Print("`", string(char))
+		}
+	case 2:
+		if char == '`' {
+			*state = 3
+			*buffer = ""
+		} else {
+			*state = 0
+			fmt.Print("``", string(char))
+		}
+	case 3:
+		if char == '\n' {
+			*state = 4
+			*lang = *buffer
+			*buffer = ""
+		} else {
+			*buffer += string(char)
+		}
+	case 4:
+		if char == '`' {
+			*state = 5
+		} else {
+			*code += string(char)
+		}
+	case 5:
+		if char == '`' {
+			*state = 6
+		} else {
+			*state = 4
+			*code += "`" + string(char)
+		}
+	case 6:
+		if char == '`' {
+			formatCode(*code, *lang)
+			*code = ""
+			*lang = ""
+			*state = 0
+		} else {
+			*state = 4
+			*code += "``" + string(char)
+		}
+	}
+}
 
 func main() {
 	// Configure the API client
@@ -70,6 +159,11 @@ func main() {
 	}
 	defer stream.Close()
 
+	state := 0
+	buffer := ""
+	code := ""
+	lang := ""
+
 	fmt.Println()
 	for {
 		response, err := stream.Recv()
@@ -83,6 +177,8 @@ func main() {
 			return
 		}
 
-		fmt.Printf(response.Choices[0].Delta.Content) // Output the response
+		for _, char := range response.Choices[0].Delta.Content {
+			processChar(char, &state, &buffer, &code, &lang)
+		}
 	}
 }
