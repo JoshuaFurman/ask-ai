@@ -35,6 +35,7 @@ func main() {
 	}
 
 	// Get prompt and validate
+	system_prompt := "You are a super powerful AI assistant. Answer all queries as concisely as possible and try to think through each response step-by-step."
 	var prompt string
 	if len(os.Args) < 2 {
 		fmt.Println("No command line argument supplied!")
@@ -51,6 +52,10 @@ func main() {
 		MaxTokens:   maxTokens,
 		Temperature: float32(temperature),
 		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: system_prompt,
+			},
 			{
 				Role:    openai.ChatMessageRoleUser,
 				Content: prompt,
@@ -69,8 +74,7 @@ func main() {
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
-			// fmt.Println("\nStream finished")
-			fmt.Println()
+			fmt.Println() // For spacing of the respsonse
 			return
 		}
 
@@ -79,6 +83,6 @@ func main() {
 			return
 		}
 
-		fmt.Printf(response.Choices[0].Delta.Content)
+		fmt.Printf(response.Choices[0].Delta.Content) // Output the response
 	}
 }
