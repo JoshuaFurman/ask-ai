@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -144,9 +145,42 @@ func main() {
 
 		for {
 			fmt.Print("-> ")
-			text, _ := reader.ReadString('\n')
+
+			// This complex block is for handling code blocks in input
+			var input_buffer bytes.Buffer
+			inCodeBlock := false
+			backtickCount := 0
+			for {
+				ch, _, err := reader.ReadRune()
+				if err != nil {
+					if err == io.EOF {
+						break
+					}
+					fmt.Println("Error reading from stdin:", err)
+					return
+				}
+
+				if ch == '`' {
+					backtickCount++
+					if backtickCount == 3 {
+						inCodeBlock = !inCodeBlock
+						backtickCount = 0
+					}
+				} else {
+					backtickCount = 0
+				}
+
+				input_buffer.WriteRune(ch)
+
+				if !inCodeBlock && ch == '\n' {
+					break
+				}
+			}
+
+			text := input_buffer.String()
 			// convert CRLF to LF
 			text = strings.Replace(text, "\n", "", -1)
+
 			if text == "exit" {
 				return
 			}

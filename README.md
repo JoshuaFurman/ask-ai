@@ -17,3 +17,6 @@ Run the following command from this directory:
 - One-off request: `<executable-name> 'Explain Big O notation.'`
 
 - Chat Mode: `<executable-name> --chat` or `<executable-name> -c`
+
+## Pasting Code in Chat Mode:
+Something to note about pasting code into the terminal when using chat mode... Code **MUST BE** wrapped in triple-ticks: ``` otherwise the reader will stop accepting input and send the request to the OpenAI API without your full message. This is the cleanest solution I could come up with for reading code pasted into the terminal. 
