@@ -1,0 +1,5 @@
+#!/bin/bash
+
+git fetch
+git pull
+go build -o ask

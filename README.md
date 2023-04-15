@@ -13,6 +13,8 @@ Run the following command from this directory:
 
 `go build -o <executable-name>` and then add your executable to your PATH
 
+Please use the `update` script if you would like to pull code changes and build the ask binary. 
+
 ## To Run:
 - One-off request: `<executable-name> 'Explain Big O notation.'`
 
