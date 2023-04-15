@@ -237,7 +237,7 @@ func main() {
 			})
 		}
 
-	} else if os.Args[1][0] == '"' || os.Args[1][0] == '\'' { // Checks the first char of the cli argument
+	} else {
 		// Get prompt and validate
 		system_prompt := "You are a super powerful AI assistant. Answer all queries as concisely as possible and try to think through each response step-by-step."
 		prompt := os.Args[1]
@@ -289,12 +289,5 @@ func main() {
 				processChar(char, &state, &buffer, &code, &lang)
 			}
 		}
-	} else {
-		fmt.Println()
-		fmt.Println("***ERROR***")
-		fmt.Println("Sorry that was not a correct argument.")
-		fmt.Println("Please use: --chat or -c for chat mode. Type \"exit\" to exit the chat.")
-		fmt.Println("Please use: \"Double Quotes\" or 'Single Quotes' for a one-off command.")
-		return
 	}
 }
