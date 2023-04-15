@@ -103,11 +103,37 @@ func processChar(char rune, state *int, buffer *string, code *string, lang *stri
 	}
 }
 
+// contains checks if a given string is in the array
+func contains(array []string, target string) bool {
+	for _, str := range array {
+		if str == target {
+			return true
+		}
+	}
+	return false
+}
+
+// Define an array of strings as a global variable
+var validModels = []string{
+	"gpt-4-32k-0314",
+	"gpt-4-32k",
+	"gpt-4-0314",
+	"gpt-4",
+	"gpt-3.5-turbo-0301",
+	"gpt-3.5-turbo",
+}
+
 func main() {
 	// Configure the API client
 	bearer := os.Getenv("OPEN_AI_TOKEN")
 	if bearer == "" {
 		fmt.Println("You need to set OPEN_AI_TOKEN environment variable.")
+	}
+	model := os.Getenv("OPEN_AI_MODEL")
+	if model == "" {
+		fmt.Println("You need to set OPEN_AI_MODEL environment variable.")
+	} else if !contains(validModels, model) {
+		fmt.Println("You have specified an invalid model... Please select from: gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301")
 	}
 	preTemp := os.Getenv("OPEN_AI_TEMP") // Pull env var, convert and error check
 	if preTemp == "" {
@@ -192,7 +218,7 @@ func main() {
 			stream, err := client.CreateChatCompletionStream(
 				ctx,
 				openai.ChatCompletionRequest{
-					Model:       openai.GPT4,
+					Model:       model,
 					MaxTokens:   maxTokens,
 					Temperature: float32(temperature),
 					Messages:    messages,
@@ -246,7 +272,7 @@ func main() {
 		c := openai.NewClient(bearer)
 		ctx := context.Background()
 		req := openai.ChatCompletionRequest{
-			Model:       openai.GPT4,
+			Model:       model,
 			MaxTokens:   maxTokens,
 			Temperature: float32(temperature),
 			Messages: []openai.ChatCompletionMessage{

@@ -7,6 +7,7 @@ Currently the model used for completion is hardcoded as GPT-4 and as such you mu
 - `OPEN_AI_TOKEN`: Your OpenAI API key (string)
 - `OPEN_AI_TEMP`: Temperature value for API call (string)
 - `OPEN_AI_MAX_TOKENS`: Max token value for API call (string)
+- `OPEN_AI_MODEL`: OpenAI Chat completions model to use (string)
 
 ## To Build Executable:
 Run the following command from this directory:
