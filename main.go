@@ -121,6 +121,7 @@ var validModels = []string{
 	"gpt-4",
 	"gpt-3.5-turbo-0301",
 	"gpt-3.5-turbo",
+	"mistralai/Mixtral-8x7B-Instruct-v0.1",
 }
 
 func main() {
@@ -151,6 +152,10 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	customUrl := os.Getenv("OPEN_AI_CUSTOM_URL")
+	if customUrl == "" {
+		fmt.Println("If you want to use a personal endpoint, set OPEN_AI_CUSTOM_URL")
+	}
 
 	if len(os.Args) < 2 {
 		fmt.Println()
@@ -160,7 +165,15 @@ func main() {
 		return
 
 	} else if os.Args[1] == "--chat" || os.Args[1] == "-c" {
-		client := openai.NewClient(bearer)
+		var client *openai.Client
+		if customUrl != "" {
+			config := openai.DefaultConfig(bearer)
+			config.BaseURL = customUrl
+			client = openai.NewClientWithConfig(config)
+		} else {
+			client = openai.NewClient(bearer)
+		}
+
 		ctx := context.Background()
 		messages := make([]openai.ChatCompletionMessage, 0)
 		reader := bufio.NewReader(os.Stdin)
@@ -269,7 +282,14 @@ func main() {
 		prompt := os.Args[1]
 
 		// Create GPT stream chat request
-		c := openai.NewClient(bearer)
+		var c *openai.Client
+		if customUrl != "" {
+			config := openai.DefaultConfig(bearer)
+			config.BaseURL = customUrl
+			c = openai.NewClientWithConfig(config)
+		} else {
+			c = openai.NewClient(bearer)
+		}
 		ctx := context.Background()
 		req := openai.ChatCompletionRequest{
 			Model:       model,
